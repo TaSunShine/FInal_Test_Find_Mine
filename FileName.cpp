@@ -1,31 +1,30 @@
 #include <iostream>
 #include <ctime>
 #include <iomanip>
-// 16¹ø°ú 17¹øÀº ÁÖ¼® ¸ðµÎ ´Þ¶ó´Â ÀÇµµ : ÄÚµå¸¦ ÀÌÇØÇß´Â°¡, 
-// ÄÁ´×¸¸À¸·Î Á¦ÃâÇÑ °ÍÀº ¾Æ´Ñ°¡ È®ÀÎÇÏ·Á´Â ÀÇµµ·Î »ý°¢ÇØ¼­
-// ±âº»ÀûÀÎ ºÎºÐµéÀº ÁÖ¼® ¾È´Þ¾Ò½À´Ï´Ù!!!!!!!!!!!!!
+
+
 using namespace std;
 
 
-// ½ÃÀÛÇÒ ¶© ÇÊ¿äÇÑ ¸Þ¼Òµå¿Í º¯¼öµéÀ» Àü¿ªº¯¼ö·Î ¼±¾ðÇÕ´Ï´Ù.
-void interdraw_One(int, int); // ¸ÊÀÇÅ©±â¸¦ ¹Þ°í ¿¹½Ã·Î¼­ 1¹ø¸¸ »ç¿ëÇÒ ¿ëµµÀÇ ¸Þ¼Òµå
-void interdraw(int**, int, int); //Áö¼ÓÀûÀ¸·Î ¹Ù²ð ¸ÊÀÇ ¿ø¼ÒµéÀ» Ç¥½ÃÇÏ±â À§ÇÑ ¸Þ¼Òµå
-int countMines(int**, int, int, int, int); // ÁÖº¯ Áö·Ú¸¦ Ã£´Â ¸Þ¼Òµå
+// ì‹œìž‘í•  ë• í•„ìš”í•œ ë©”ì†Œë“œì™€ ë³€ìˆ˜ë“¤ì„ ì „ì—­ë³€ìˆ˜ë¡œ ì„ ì–¸í•©ë‹ˆë‹¤.
+void interdraw_One(int, int); // ë§µì˜í¬ê¸°ë¥¼ ë°›ê³  ì˜ˆì‹œë¡œì„œ 1ë²ˆë§Œ ì‚¬ìš©í•  ìš©ë„ì˜ ë©”ì†Œë“œ
+void interdraw(int**, int, int); //ì§€ì†ì ìœ¼ë¡œ ë°”ë€” ë§µì˜ ì›ì†Œë“¤ì„ í‘œì‹œí•˜ê¸° ìœ„í•œ ë©”ì†Œë“œ
+int countMines(int**, int, int, int, int); // ì£¼ë³€ ì§€ë¢°ë¥¼ ì°¾ëŠ” ë©”ì†Œë“œ
 
-int xCnt, yCnt; //»ç¿ëÀÚ°¡ ÀÔ·ÂÇÑ X,YÀÇ Å©±â°ª
+int xCnt, yCnt; //ì‚¬ìš©ìžê°€ ìž…ë ¥í•œ X,Yì˜ í¬ê¸°ê°’
 
-int** map; //¸ÊÀ» ¼³Á¤ÇÏ±â À§ÇØ ÇÊ¿äÇÑ mapÀÌ¶ó´Â Æ÷ÀÎÅÍ º¯¼öÀÔ´Ï´Ù. , ½ÇÁ¦·Î º¸¿©ÁÖ°í »ç¿ëÇÒ ¹è¿­
-int** mine; //Áö·Ú¸¦ ¼³Á¤ÇÏ±â À§ÇØ ÇÊ¿äÇÑ mine  Æ÷ÀÎÅÍ º¯¼öÀÔ´Ï´Ù. , ¸¶ÀÎÀÌ ½ÇÁ¦ ¼³Ä¡µÈ À§Ä¡¸¦ ÀÇ¹ÌÇÏ´Â ¹è¿­
-// mapÀº ¾îµð±îÁö³ª mapÀ¸·Î½á Áö·ÚÀÇ À§Ä¡¸¦ ¸ð¸£Áö¸¸ ,mine¿¡´Â ¸ðµç Áö·Ú°¡ ·£´ýÇÏ°Ô º¸ÀÌ´Â»óÅÂÀÌ´Ù. ±×·¯¹Ç·Î
-// ¹è¿­À» 2°³ ¼³Á¤ÇÑ ÈÄ, Áö·Ú¸¦ ÅëÇÑ »óÈ£ÀÛ¿ëÀº mine, °ÑÀ¸·Î´Â mapÀ» º¸¿©ÁÖ´Â ÇüÅÂ·Î ÄÚµå°¡ µ¹¾Æ°£´Ù.
+int** map; //ë§µì„ ì„¤ì •í•˜ê¸° ìœ„í•´ í•„ìš”í•œ mapì´ë¼ëŠ” í¬ì¸í„° ë³€ìˆ˜ìž…ë‹ˆë‹¤. , ì‹¤ì œë¡œ ë³´ì—¬ì£¼ê³  ì‚¬ìš©í•  ë°°ì—´
+int** mine; //ì§€ë¢°ë¥¼ ì„¤ì •í•˜ê¸° ìœ„í•´ í•„ìš”í•œ mine  í¬ì¸í„° ë³€ìˆ˜ìž…ë‹ˆë‹¤. , ë§ˆì¸ì´ ì‹¤ì œ ì„¤ì¹˜ëœ ìœ„ì¹˜ë¥¼ ì˜ë¯¸í•˜ëŠ” ë°°ì—´
+// mapì€ ì–´ë””ê¹Œì§€ë‚˜ mapìœ¼ë¡œì¨ ì§€ë¢°ì˜ ìœ„ì¹˜ë¥¼ ëª¨ë¥´ì§€ë§Œ ,mineì—ëŠ” ëª¨ë“  ì§€ë¢°ê°€ ëžœë¤í•˜ê²Œ ë³´ì´ëŠ”ìƒíƒœì´ë‹¤. ê·¸ëŸ¬ë¯€ë¡œ
+// ë°°ì—´ì„ 2ê°œ ì„¤ì •í•œ í›„, ì§€ë¢°ë¥¼ í†µí•œ ìƒí˜¸ìž‘ìš©ì€ mine, ê²‰ìœ¼ë¡œëŠ” mapì„ ë³´ì—¬ì£¼ëŠ” í˜•íƒœë¡œ ì½”ë“œê°€ ëŒì•„ê°„ë‹¤.
 
-int countMines(int** mine, int xCnt, int yCnt, int x, int y) { //¸¶ÀÎÀ» ¼¼´Â ¸Þ¼Òµå
+int countMines(int** mine, int xCnt, int yCnt, int x, int y) { //ë§ˆì¸ì„ ì„¸ëŠ” ë©”ì†Œë“œ
     int count = 0;
 
-    // ¿©±â¼­ ¸»ÇÏ´Â count´Â ÁÖº¯ÀÇ Áö·Ú°¹¼ö¸¦ ÀÇ¹ÌÇÏ´Âµ¥,
-    // Áö·Ú°¡ ¸ðµÎ ÇÑ ¹è¿­¿¡ À§Ä¡µÇ¾î ÀÖ´Ù´Â Á¡À» ÀÌ¿ëÇß´Ù.
-    // ÁöÁ¤µÈ À§Ä¡(»ç¿ëÀÚ·ÎºÎÅÍ ¹ÞÀºx,y°ª) ·ÎºÎÅÍ ÁÂ¿ì, »óÇÏÀÇ ÁÂ¿ì, »óÇÏÀÇ À§Ä¡¸¦ ¸ðµÎ countÇØ¼­
-    // ÀÖ´Â ¸¸Å­ ¼ýÀÚ¸¦ ÁõÁø½ÃÅ°°í int·Î½á ³»¹ñ´Â ¿ø¸®ÀÌ´Ù, (&& = and¿¬»êÀÚ), (|| = or ¿¬»êÀÚ)
+    // ì—¬ê¸°ì„œ ë§í•˜ëŠ” countëŠ” ì£¼ë³€ì˜ ì§€ë¢°ê°¯ìˆ˜ë¥¼ ì˜ë¯¸í•˜ëŠ”ë°,
+    // ì§€ë¢°ê°€ ëª¨ë‘ í•œ ë°°ì—´ì— ìœ„ì¹˜ë˜ì–´ ìžˆë‹¤ëŠ” ì ì„ ì´ìš©í–ˆë‹¤.
+    // ì§€ì •ëœ ìœ„ì¹˜(ì‚¬ìš©ìžë¡œë¶€í„° ë°›ì€x,yê°’) ë¡œë¶€í„° ì¢Œìš°, ìƒí•˜ì˜ ì¢Œìš°, ìƒí•˜ì˜ ìœ„ì¹˜ë¥¼ ëª¨ë‘ countí•´ì„œ
+    // ìžˆëŠ” ë§Œí¼ ìˆ«ìžë¥¼ ì¦ì§„ì‹œí‚¤ê³  intë¡œì¨ ë‚´ë±‰ëŠ” ì›ë¦¬ì´ë‹¤, (&& = andì—°ì‚°ìž), (|| = or ì—°ì‚°ìž)
     for (int i = -1; i <= 1; i++) {
         for (int j = -1; j <= 1; j++) {
             int newX = x + i;
@@ -41,13 +40,13 @@ int countMines(int** mine, int xCnt, int yCnt, int x, int y) { //¸¶ÀÎÀ» ¼¼´Â ¸Þ¼
 
     return count;
 }
-//ÇÑ¹ø¸¸ Ãâ·ÂÇÏ´Â ¸Ê, ¹Ì¸®º¸±â°³³ä
-void interdraw_One(int xLen, int yLen) {  //xLen°ú yLenÀº ¿©±â¼­¸¸ »ç¿ëÇÕ´Ï´Ù.
+//í•œë²ˆë§Œ ì¶œë ¥í•˜ëŠ” ë§µ, ë¯¸ë¦¬ë³´ê¸°ê°œë…
+void interdraw_One(int xLen, int yLen) {  //xLenê³¼ yLenì€ ì—¬ê¸°ì„œë§Œ ì‚¬ìš©í•©ë‹ˆë‹¤.
    
-    // ÃÖÃÊ 1¹ø¸¸ ¼³Á¤ÇÏ°í »ç¿ëÇÏÁö ¾Ê´Â ¸Þ¼Òµå±â¿¡ Æ¯¼öÇÑ º¯¼ö¸íÀ» »ç¿ëÇß´Ù.
-    // ¿ëµµ : ÀüÃ¼ ¸Ê ´ë°­ ¹Ì¸®º¸±â
+    // ìµœì´ˆ 1ë²ˆë§Œ ì„¤ì •í•˜ê³  ì‚¬ìš©í•˜ì§€ ì•ŠëŠ” ë©”ì†Œë“œê¸°ì— íŠ¹ìˆ˜í•œ ë³€ìˆ˜ëª…ì„ ì‚¬ìš©í–ˆë‹¤.
+    // ìš©ë„ : ì „ì²´ ë§µ ëŒ€ê°• ë¯¸ë¦¬ë³´ê¸°
 
-    cout << "ÇØ´ç ¸Ê¿¡¼­ Áö·Ú¸¦ Ã£½À´Ï´Ù."<< "\n" << "(½ÇÁ¦°ªÀº 0ÀÌ Ãß°¡µË´Ï´Ù.)" << endl;
+    cout << "í•´ë‹¹ ë§µì—ì„œ ì§€ë¢°ë¥¼ ì°¾ìŠµë‹ˆë‹¤."<< "\n" << "(ì‹¤ì œê°’ì€ 0ì´ ì¶”ê°€ë©ë‹ˆë‹¤.)" << endl;
     for (int i = 0; i <= yLen; i++) {
         cout << setw(2) << i;
     }
@@ -63,20 +62,20 @@ void interdraw_One(int xLen, int yLen) {  //xLen°ú yLenÀº ¿©±â¼­¸¸ »ç¿ëÇÕ´Ï´Ù.
 } 
 
 int MineCheck() {
-    // Áö·Ú°¡ 0ÀÌ°Å³ª ¹üÀ§º¸´Ù Å¬ °æ¿ì¿£ ´Ù½Ã ÀÔ·Â ¹Þ´Â´Ù.
-    // Çã¿ëµÈ Áö·Ú°ª¸¸À» Çã¿ëÇÏ±â À§ÇÑ ¸Þ¼ÒµåÀÌ´Ù.
-    // ÇØ´ç ¸Þ¼Òµå·ÎºÎÅÍ ¸¶ÀÎÅ©±â¸¦ ÀÔ·Â¹Þ±â¿¡ ¸Å°³º¯¼ö°¡ µû·Î ¾ø´Ù.
-    // ¸¸¾à 0ÀÌÇÏ°Å³ª Ã³À½¿¡ ÁöÁ¤ÇÑx,y°ªº¸´Ùµµ Å« °æ¿ì¿¡´Â else·Î ÀÌµ¿ÇÏÁö ¾Ê°í ¹«ÇÑ¹Ýº¹µÇ±â¿¡
-    // ¿Ã¹Ù¸¥ Áö·Ú °¹¼ö¸¦ ÀÔ·Â¹ÞÀ» ¼ö ÀÖ°Ô µÈ´Ù.
+    // ì§€ë¢°ê°€ 0ì´ê±°ë‚˜ ë²”ìœ„ë³´ë‹¤ í´ ê²½ìš°ì—” ë‹¤ì‹œ ìž…ë ¥ ë°›ëŠ”ë‹¤.
+    // í—ˆìš©ëœ ì§€ë¢°ê°’ë§Œì„ í—ˆìš©í•˜ê¸° ìœ„í•œ ë©”ì†Œë“œì´ë‹¤.
+    // í•´ë‹¹ ë©”ì†Œë“œë¡œë¶€í„° ë§ˆì¸í¬ê¸°ë¥¼ ìž…ë ¥ë°›ê¸°ì— ë§¤ê°œë³€ìˆ˜ê°€ ë”°ë¡œ ì—†ë‹¤.
+    // ë§Œì•½ 0ì´í•˜ê±°ë‚˜ ì²˜ìŒì— ì§€ì •í•œx,yê°’ë³´ë‹¤ë„ í° ê²½ìš°ì—ëŠ” elseë¡œ ì´ë™í•˜ì§€ ì•Šê³  ë¬´í•œë°˜ë³µë˜ê¸°ì—
+    // ì˜¬ë°”ë¥¸ ì§€ë¢° ê°¯ìˆ˜ë¥¼ ìž…ë ¥ë°›ì„ ìˆ˜ ìžˆê²Œ ëœë‹¤.
     int mineCnt;
     do {
-        cout << "»ý¼ºÇÒ Áö·ÚÀÇ ÃÑ °³¼ö¸¦ ÀÔ·ÂÇØÁÖ¼¼¿ä." << endl;
+        cout << "ìƒì„±í•  ì§€ë¢°ì˜ ì´ ê°œìˆ˜ë¥¼ ìž…ë ¥í•´ì£¼ì„¸ìš”." << endl;
         cin >> mineCnt;
             if (mineCnt <1) {
-                cout << "0ÀÌÇÏÀÇ ¼ö¸¦ Á¦¿ÜÇÑ ¼ö¸¦ ÀÔ·ÂÇØÁÖ¼¼¿ä." << endl;
+                cout << "0ì´í•˜ì˜ ìˆ˜ë¥¼ ì œì™¸í•œ ìˆ˜ë¥¼ ìž…ë ¥í•´ì£¼ì„¸ìš”." << endl;
             }
             else if (mineCnt > xCnt * yCnt) {
-                cout << "¹üÀ§º¸´Ù Å©°Ô Áö·Ú¸¦ ¼³Ä¡ÇÒ ¼ö ¾ø¾î¿ä!" << endl;
+                cout << "ë²”ìœ„ë³´ë‹¤ í¬ê²Œ ì§€ë¢°ë¥¼ ì„¤ì¹˜í•  ìˆ˜ ì—†ì–´ìš”!" << endl;
             }
             else{
                 return mineCnt;
@@ -85,13 +84,13 @@ int MineCheck() {
 }
 
 
-    // Áö·Ú »ý¼º
+    // ì§€ë¢° ìƒì„±
 void MakeTrap(int mineCnt) {
     int a, b = 0;
-    // ÇØ´ç ¸Þ¼Òµå¿¡¼­´Â a,b´Â °¢°¢ x¿Í yÁÂÇ¥¸¦ ÀÇ¹ÌÇÏ¿© ½ÇÁ¦·Î Áö·Ú¸¦
-    // ¸Ê¿¡ ¼³Ä¡ÇÏ´Â ¸Þ¼Òµå°¡ µÈ´Ù. 
-    // ¼³Ä¡ÇÒ À§Ä¡´Â rand¸¦ µ¹·Á¼­ ·£´ýÇÑ °÷¿¡ ¼³Ä¡ÇÏ°Ô µÇ´Âµ¥ ±× ¹üÀ§´Â Àü¿ªº¯¼ö·Î ¼³Á¤µÈ x¿Í yÀÌÇÏÀÌ¸ç
-    // ¼³Ä¡ÇÒ °¹¼ö¸¸À» ¸Å°³º¯¼ö·Î µé°í¿Â´Ù.
+    // í•´ë‹¹ ë©”ì†Œë“œì—ì„œëŠ” a,bëŠ” ê°ê° xì™€ yì¢Œí‘œë¥¼ ì˜ë¯¸í•˜ì—¬ ì‹¤ì œë¡œ ì§€ë¢°ë¥¼
+    // ë§µì— ì„¤ì¹˜í•˜ëŠ” ë©”ì†Œë“œê°€ ëœë‹¤. 
+    // ì„¤ì¹˜í•  ìœ„ì¹˜ëŠ” randë¥¼ ëŒë ¤ì„œ ëžœë¤í•œ ê³³ì— ì„¤ì¹˜í•˜ê²Œ ë˜ëŠ”ë° ê·¸ ë²”ìœ„ëŠ” ì „ì—­ë³€ìˆ˜ë¡œ ì„¤ì •ëœ xì™€ yì´í•˜ì´ë©°
+    // ì„¤ì¹˜í•  ê°¯ìˆ˜ë§Œì„ ë§¤ê°œë³€ìˆ˜ë¡œ ë“¤ê³ ì˜¨ë‹¤.
     for (int i = 0; i < mineCnt; i++) {
         while (1) {
             a = rand() % xCnt;
@@ -105,30 +104,30 @@ void MakeTrap(int mineCnt) {
 }
 
 
-    //½ÇÁ¦ ¸Ê ±¸¼º
+    //ì‹¤ì œ ë§µ êµ¬ì„±
 void interdraw(int** map, int xCnt, int yCnt) {
-    // x ÁÂÇ¥ Ãâ·Â (¿­ , < ÁÂ~¿ì > )
+    // x ì¢Œí‘œ ì¶œë ¥ (ì—´ , < ì¢Œ~ìš° > )
     cout << " ";
     for (int i = 0; i < xCnt; i++) {
         cout << setw(4) << "" << i;
     }
     cout << endl;
 
-    // y ÁÂÇ¥ Ãâ·Â  (Çà, À§ ~ ¾Æ·¡)
+    // y ì¢Œí‘œ ì¶œë ¥  (í–‰, ìœ„ ~ ì•„ëž˜)
     for (int i = 0; i < yCnt; i++) {
         cout << setw(2) << i;
 
 
-        // ÇØ´ç ±âÈ£µéÀº ÀÌ¹Ì ¹âÀº °÷, È¤Àº Áö·Ú°¡ ´©¼³µÈ À§Ä¡¸¦ ÀÇ¹ÌÇÏ°ÔµÈ´Ù.
-        // mapÀÇ x¿Í yÁÂÇ¥°¡ 0ÀÏ°æ¿ì´Â ¾ÆÁ÷ ¹ÌÈ®ÀÎ, 1ÀÎ°æ¿ì´Â ±ÙÃ³¿¡ Áö·Ú°¡ ÀÖ´Ù´Â ÀÇ¹Ì(±ê¹ßÀÇ ÇÏÀ§È£È¯), 2ÀÎ °æ¿ì´Â È®ÀÎÀÌ ¿Ï·áµÈ ¾ÈÀüÇÑ Áö¿ªÀÌ¶ó´Â ÀÇ¹Ì.
+        // í•´ë‹¹ ê¸°í˜¸ë“¤ì€ ì´ë¯¸ ë°Ÿì€ ê³³, í˜¹ì€ ì§€ë¢°ê°€ ëˆ„ì„¤ëœ ìœ„ì¹˜ë¥¼ ì˜ë¯¸í•˜ê²Œëœë‹¤.
+        // mapì˜ xì™€ yì¢Œí‘œê°€ 0ì¼ê²½ìš°ëŠ” ì•„ì§ ë¯¸í™•ì¸, 1ì¸ê²½ìš°ëŠ” ê·¼ì²˜ì— ì§€ë¢°ê°€ ìžˆë‹¤ëŠ” ì˜ë¯¸(ê¹ƒë°œì˜ í•˜ìœ„í˜¸í™˜), 2ì¸ ê²½ìš°ëŠ” í™•ì¸ì´ ì™„ë£Œëœ ì•ˆì „í•œ ì§€ì—­ì´ë¼ëŠ” ì˜ë¯¸.
       
         for (int j = 0; j < xCnt; j++) {
             if (map[i][j] == 0) {
-                cout << setw(6) << " ¡á ";
+                cout << setw(6) << " â–  ";
             } else if (map[i][j] == 1) {
-                cout << setw(6) << " ¡Ø ";
+                cout << setw(6) << " â€» ";
             } else if (map[i][j] == 2) {
-                cout << setw(6) << " ¡Ü ";
+                cout << setw(6) << " â— ";
             }
         }
         cout << endl;
@@ -140,25 +139,25 @@ void interdraw(int** map, int xCnt, int yCnt) {
 int main() {
     
     srand((unsigned)time(NULL)); 
-    // ÇÁ·Î±×·¥À» ½ÇÇàÇÏ´Â Áï½Ã ½Ãµå°ªÀ» ¹Ù²Ù¸é¼­ ·£´ý°ªÀÌ »ý¼ºµÇ´Â ÇüÅÂ. 
-    // ½ÇÇà ½Ã 1¹ø¸¸ ½ÇÇàµÇ¹Ç·Î ²Ï È¿À²ÀûÀÎ °Í °°´Ù.
+    // í”„ë¡œê·¸ëž¨ì„ ì‹¤í–‰í•˜ëŠ” ì¦‰ì‹œ ì‹œë“œê°’ì„ ë°”ê¾¸ë©´ì„œ ëžœë¤ê°’ì´ ìƒì„±ë˜ëŠ” í˜•íƒœ. 
+    // ì‹¤í–‰ ì‹œ 1ë²ˆë§Œ ì‹¤í–‰ë˜ë¯€ë¡œ ê½¤ íš¨ìœ¨ì ì¸ ê²ƒ ê°™ë‹¤.
 
-    cout << "»ý¼ºÇÒ ¸ÊÀÇ X,Y°ªÀ» ÀÔ·ÂÇØÁÖ¼¼¿ä. ex) 3 3" << endl;    
-    cin >> xCnt >> yCnt;  //»ç¿ëÀÚ·ÎºÎÅÍ x,y¸¦ ÀÔ·Â¹Þ°í ÇØ´ç °ªÀº Ã³À½¿¡ Àü¿ªº¯¼ö·Î½á ¼³Á¤µÇ¾ú´Ù.
+    cout << "ìƒì„±í•  ë§µì˜ X,Yê°’ì„ ìž…ë ¥í•´ì£¼ì„¸ìš”. ex) 3 3" << endl;    
+    cin >> xCnt >> yCnt;  //ì‚¬ìš©ìžë¡œë¶€í„° x,yë¥¼ ìž…ë ¥ë°›ê³  í•´ë‹¹ ê°’ì€ ì²˜ìŒì— ì „ì—­ë³€ìˆ˜ë¡œì¨ ì„¤ì •ë˜ì—ˆë‹¤.
 
-    interdraw_One(xCnt, yCnt);  // ÃÖÃÊ 1¹ø¸¸À» Ãâ·ÂÇÏ´Â ¸Þ¼Òµå, ¹Ì¸®º¸±â°³³ä
+    interdraw_One(xCnt, yCnt);  // ìµœì´ˆ 1ë²ˆë§Œì„ ì¶œë ¥í•˜ëŠ” ë©”ì†Œë“œ, ë¯¸ë¦¬ë³´ê¸°ê°œë…
 
-    // ¹è¿­ ¸ðµç °ª ÃÊ±âÈ­(»ç¿ëÀÚ°¡ ÃÊ±âÈ­ÇÏ´Â ÇüÅÂ¶ó°íµµ ÇÒ ¼ö ÀÖ´Ù.)
+    // ë°°ì—´ ëª¨ë“  ê°’ ì´ˆê¸°í™”(ì‚¬ìš©ìžê°€ ì´ˆê¸°í™”í•˜ëŠ” í˜•íƒœë¼ê³ ë„ í•  ìˆ˜ ìžˆë‹¤.)
     map = new int* [xCnt];
-    mine = new int* [xCnt];  //»ç¿ëÀÚ·ÎºÎÅÍ ÀÔ·Â¹ÞÀº x,y¸¦ ½ÇÁ¦·Î Àû¿ë½ÃÅ°°í °¢°¢ ¸ÊÀÇ Å©±â, Áö·ÚÀÇ ÃÖ´ë°ªÀ¸·Î½á ÀúÀåÇÑ´Ù.
+    mine = new int* [xCnt];  //ì‚¬ìš©ìžë¡œë¶€í„° ìž…ë ¥ë°›ì€ x,yë¥¼ ì‹¤ì œë¡œ ì ìš©ì‹œí‚¤ê³  ê°ê° ë§µì˜ í¬ê¸°, ì§€ë¢°ì˜ ìµœëŒ€ê°’ìœ¼ë¡œì¨ ì €ìž¥í•œë‹¤.
 
-    for (int i = 0; i < yCnt; i++) { //  x¸¸Å­ y¸¦ ¹Ýº¹½ÃÄÑ¼­ 2Â÷¿øÀÇ ÃÖ´ë ¸ÊÀÇ Å©±â, ÃÖ´ë Áö·Ú ¼³Ä¡ Áö¿ªÀ» ¼³Á¤ÇÑ´Ù. 
+    for (int i = 0; i < yCnt; i++) { //  xë§Œí¼ yë¥¼ ë°˜ë³µì‹œì¼œì„œ 2ì°¨ì›ì˜ ìµœëŒ€ ë§µì˜ í¬ê¸°, ìµœëŒ€ ì§€ë¢° ì„¤ì¹˜ ì§€ì—­ì„ ì„¤ì •í•œë‹¤. 
         map[i] = new int[yCnt]();
         mine[i] = new int[yCnt]();
     }
 
-   int mineCnt = MineCheck(); // mineCnt º¯¼ö´Â MineCheck¸¦ ÅëÇØ CountµÈ °¹¼ö¸¦ ³ªÅ¸³»´Â º¯¼ö,
-                              // Count´Â Áö±Ý±îÁö ¸î ¹ø ¶¥À» ¹â¾Ò´ÂÁö ¾Ë·ÁÁÖ´Â º¯¼öÀÌ´Ù.
+   int mineCnt = MineCheck(); // mineCnt ë³€ìˆ˜ëŠ” MineCheckë¥¼ í†µí•´ Countëœ ê°¯ìˆ˜ë¥¼ ë‚˜íƒ€ë‚´ëŠ” ë³€ìˆ˜,
+                              // CountëŠ” ì§€ê¸ˆê¹Œì§€ ëª‡ ë²ˆ ë•…ì„ ë°Ÿì•˜ëŠ”ì§€ ì•Œë ¤ì£¼ëŠ” ë³€ìˆ˜ì´ë‹¤.
     MakeTrap(mineCnt);
    int Count = 0; 
 
@@ -166,21 +165,21 @@ int main() {
         int x, y;
         int result = 0;
 
-        cout << "xÁÂÇ¥¿Í yÁÂÇ¥¸¦ ÀÔ·ÂÇÏ¼¼¿ä : ex) 2 2 " << "ÇöÀç±îÁö ¿òÁ÷ÀÎ È½¼ö : " << Count << endl << "¡Ø´Â ÁÖº¯¿¡ Áö·Ú°¡ ÀÖÀ½À» ÀÇ¹ÌÇÕ´Ï´Ù." << endl;
+        cout << "xì¢Œí‘œì™€ yì¢Œí‘œë¥¼ ìž…ë ¥í•˜ì„¸ìš” : ex) 2 2 " << "í˜„ìž¬ê¹Œì§€ ì›€ì§ì¸ íšŸìˆ˜ : " << Count << endl << "â€»ëŠ” ì£¼ë³€ì— ì§€ë¢°ê°€ ìžˆìŒì„ ì˜ë¯¸í•©ë‹ˆë‹¤." << endl;
         cin >> y >> x;
-        //  ¿©±â¼­ ¸»ÇÏ´Â xÁÂÇ¥¿Í yÁÂÇ¥´Â Ã³À½¿¡ ¼³Á¤Çß´ø "¼³Á¤"°ú´Â °ü°è°¡ ¾ø´Ù.
-        //  ÀÚ½ÅÀÌ ¹âÀ» À§Ä¡ÀÌ´Ù.
-        // ±ê¹ßÀ» ²È´Â ÇüÅÂ·Î ½Â¸®ÇÏ´Â ÇüÅÂµµ ÀÖÁö¸¸, ÄÚµå°¡ º¹ÀâÇÏ´Ù°í »ý°¢ÇØ¼­
-        // Áö·Ú¸¦ "Ã£´Â´Ù"´Â ¿ä¼Ò¸¦ Àç¹Ì·Î½á ±¸ÇöÇØº¸¾Ò´Ù.
+        //  ì—¬ê¸°ì„œ ë§í•˜ëŠ” xì¢Œí‘œì™€ yì¢Œí‘œëŠ” ì²˜ìŒì— ì„¤ì •í–ˆë˜ "ì„¤ì •"ê³¼ëŠ” ê´€ê³„ê°€ ì—†ë‹¤.
+        //  ìžì‹ ì´ ë°Ÿì„ ìœ„ì¹˜ì´ë‹¤.
+        // ê¹ƒë°œì„ ê½‚ëŠ” í˜•íƒœë¡œ ìŠ¹ë¦¬í•˜ëŠ” í˜•íƒœë„ ìžˆì§€ë§Œ, ì½”ë“œê°€ ë³µìž¡í•˜ë‹¤ê³  ìƒê°í•´ì„œ
+        // ì§€ë¢°ë¥¼ "ì°¾ëŠ”ë‹¤"ëŠ” ìš”ì†Œë¥¼ ìž¬ë¯¸ë¡œì¨ êµ¬í˜„í•´ë³´ì•˜ë‹¤.
 
         
     
         if (x >= 0 && x < xCnt && y >= 0 && y < yCnt) { 
-            // ¸¸¾à ÃÖÃÊ·Î ¹âÀº À§Ä¡¿¡ Áö·Ú°¡ ¼³Ä¡µÇ¾îÀÖ¾ú´Ù¸é
-            // ÃÊ±âÈ­ÇÏ°í Ã³À½ºÎÅÍ ´Ù½Ã ½ÇÇàÇÏ´Â ºÎºÐÀÌ µÈ´Ù.
-            // ÃÊ±âÈ­´Â Å©±âºÎÅÍ ÀçÁöÁ¤ ÇÏ´Â °ÍÀÌ ¾Æ´Ï¶ó Ã³À½¿¡ ÀÔ·Â¹ÞÀº °ªÀ» ±×´ë·Î ÀÌ¿ëÇØ¼­ Áö·ÚÀÇ À§Ä¡¸¸ ¹Ù²Ù´Â ÇüÅÂÀÌ´Ù.
+            // ë§Œì•½ ìµœì´ˆë¡œ ë°Ÿì€ ìœ„ì¹˜ì— ì§€ë¢°ê°€ ì„¤ì¹˜ë˜ì–´ìžˆì—ˆë‹¤ë©´
+            // ì´ˆê¸°í™”í•˜ê³  ì²˜ìŒë¶€í„° ë‹¤ì‹œ ì‹¤í–‰í•˜ëŠ” ë¶€ë¶„ì´ ëœë‹¤.
+            // ì´ˆê¸°í™”ëŠ” í¬ê¸°ë¶€í„° ìž¬ì§€ì • í•˜ëŠ” ê²ƒì´ ì•„ë‹ˆë¼ ì²˜ìŒì— ìž…ë ¥ë°›ì€ ê°’ì„ ê·¸ëŒ€ë¡œ ì´ìš©í•´ì„œ ì§€ë¢°ì˜ ìœ„ì¹˜ë§Œ ë°”ê¾¸ëŠ” í˜•íƒœì´ë‹¤.
             if (map[x][y] == 1 && (Count == 0)) {
-                cout << "Ã¹ ¶¥ÀÌ Áö·Ú³×¿ä. Áö·Ú¸¦ ´Ù½Ã ¼³Ä¡ Áß.." << endl;
+                cout << "ì²« ë•…ì´ ì§€ë¢°ë„¤ìš”. ì§€ë¢°ë¥¼ ë‹¤ì‹œ ì„¤ì¹˜ ì¤‘.." << endl;
 
                 for (int i = 0; i < xCnt; i++) {
                     for (int j = 0; j < yCnt; j++) {
@@ -198,30 +197,30 @@ int main() {
             }
 
             else if (mine[x][y] == 1 && (Count > 1)) {
-               // ÃÖÃÊ·Î ¹âÁö ¾Ê¾Ò±â¿¡ ±× ´ÙÀ½ºÎÅÍ ¹â´Â °æ¿ì´Â Áö·Ú¸¦ ¹âÀº °ÍÀ¸·Î ÆÇ´Ü,
-               // »ç¸ÁÃ³¸® ÈÄ ÀüÃ¼ Áö·Ú À§Ä¡¸¦ º¸¿©ÁØ ÈÄ¿¡ °ÔÀÓÀ» Á¾·á½ÃÅ²´Ù.
+               // ìµœì´ˆë¡œ ë°Ÿì§€ ì•Šì•˜ê¸°ì— ê·¸ ë‹¤ìŒë¶€í„° ë°ŸëŠ” ê²½ìš°ëŠ” ì§€ë¢°ë¥¼ ë°Ÿì€ ê²ƒìœ¼ë¡œ íŒë‹¨,
+               // ì‚¬ë§ì²˜ë¦¬ í›„ ì „ì²´ ì§€ë¢° ìœ„ì¹˜ë¥¼ ë³´ì—¬ì¤€ í›„ì— ê²Œìž„ì„ ì¢…ë£Œì‹œí‚¨ë‹¤.
                 map[x][y] = 1; 
 
-                cout << " Áö·Ú°¡ Æã~ÇÏ°í ÅÍÁ³½À´Ï´Ù!!!!" << endl << "°á°úÃ¢" << endl;
+                cout << " ì§€ë¢°ê°€ íŽ‘~í•˜ê³  í„°ì¡ŒìŠµë‹ˆë‹¤!!!!" << endl << "ê²°ê³¼ì°½" << endl;
                 interdraw(mine, xCnt, yCnt);
                 break;
             }
      
             else if (map[x][y] == 2) {
-                //´Ü¼øÇÏ°Ô ÀÌ¹Ì ¹âÀº °÷Àº ¾Ë·ÁÁØ´Ù.
-                cout << "ÀÌ¹Ì ¹æ¹®ÇÑ Áö¿ªÀÌ¿¡¿ä!"  << endl;
+                //ë‹¨ìˆœí•˜ê²Œ ì´ë¯¸ ë°Ÿì€ ê³³ì€ ì•Œë ¤ì¤€ë‹¤.
+                cout << "ì´ë¯¸ ë°©ë¬¸í•œ ì§€ì—­ì´ì—ìš”!"  << endl;
             }
             else if (map[x][y] == 0) {
-                // ÃÖÃÊ·Î ¹âÀº °æ¿ì ¾ÈÀüÇÔÀ»³ªÅ¸³¿°ú  µ¿½Ã¿¡
-                // ÁÖº¯ À§Ä¡¿¡ Á¸ÀçÇÏ´Â Áö·ÚÀÇ °¹¼ö¸¦ ¾Ë·ÁÁÖ°ÔµÇ¸ç,
-                // ÇØ´ç mapÀÇ ÁÂÇ¥¸¦ Áö·Ú°¡ ÀÖÀ»°æ¿ì´Â ÆøÅºÇ¥½Ã, 
-                // ±×·¸Áö ¾ÊÀ¸¸é ÁÖº¯ÀÌ ¾ÈÀüÇÏ´Ù´Â µ¿±×¶ó¹ÌÇ¥½Ã¸¦ À§ÇØ 1(ÁÖÀÇ) ¶Ç´Â 2(¾ÈÀü)¸¦ ³²±ä´Ù.
+                // ìµœì´ˆë¡œ ë°Ÿì€ ê²½ìš° ì•ˆì „í•¨ì„ë‚˜íƒ€ëƒ„ê³¼  ë™ì‹œì—
+                // ì£¼ë³€ ìœ„ì¹˜ì— ì¡´ìž¬í•˜ëŠ” ì§€ë¢°ì˜ ê°¯ìˆ˜ë¥¼ ì•Œë ¤ì£¼ê²Œë˜ë©°,
+                // í•´ë‹¹ mapì˜ ì¢Œí‘œë¥¼ ì§€ë¢°ê°€ ìžˆì„ê²½ìš°ëŠ” í­íƒ„í‘œì‹œ, 
+                // ê·¸ë ‡ì§€ ì•Šìœ¼ë©´ ì£¼ë³€ì´ ì•ˆì „í•˜ë‹¤ëŠ” ë™ê·¸ë¼ë¯¸í‘œì‹œë¥¼ ìœ„í•´ 1(ì£¼ì˜) ë˜ëŠ” 2(ì•ˆì „)ë¥¼ ë‚¨ê¸´ë‹¤.
                 int mineCount = countMines(mine, xCnt, yCnt, x, y);
                 
                 if (mineCount > 0) {
                     map[x][y] = 1;
                 }else map[x][y] = 2;
-                 cout << "ÁÖº¯ Áö·Ú °³¼ö: " << mineCount << endl;
+                 cout << "ì£¼ë³€ ì§€ë¢° ê°œìˆ˜: " << mineCount << endl;
                 result++;
                 Count++;
             }
@@ -230,16 +229,16 @@ int main() {
             interdraw(map, xCnt, yCnt);
 
             if ((xCnt * yCnt - mineCnt) == result) {
-                //½Â¸®Á¶°ÇÀº Áö·Ú¸¦ ¸ðµÎ Ã£¾ÒÀ¸¸ç ´õ ÀÌ»ó ¾ÈÀüÇÏ°Ô ¹âÀ» ¶¥ÀÌ ¾ø´Ù´Â ÀÇ¹Ì°¡ µÈ´Ù.
-                cout << "Áö·Ú¸¦ ¸ðµÎ Ã£¾Ò´Ù!" << endl;
+                //ìŠ¹ë¦¬ì¡°ê±´ì€ ì§€ë¢°ë¥¼ ëª¨ë‘ ì°¾ì•˜ìœ¼ë©° ë” ì´ìƒ ì•ˆì „í•˜ê²Œ ë°Ÿì„ ë•…ì´ ì—†ë‹¤ëŠ” ì˜ë¯¸ê°€ ëœë‹¤.
+                cout << "ì§€ë¢°ë¥¼ ëª¨ë‘ ì°¾ì•˜ë‹¤!" << endl;
                 Count = 0;
                 break;
             }
         }
         else {
-            // ÀÏ¹ÝÀûÀ¸·Î´Â 0,0 0,1À¸·Î µé¾î¿ÀÁö¸¸, 
-            // ¸¸¾à ¸Ê Å©±âº¸´Ù Å©°Å³ª ÀÛÀº °æ¿ì¿¡´Â x¿Í y¸¦ ÀÚµ¿ ÃÊ±âÈ­ÇÏ°í ÁÂÇ¥¸¦ ´Ù½Ã ÀÔ·ÂÇÏ°Ô²û ¸¸µå´Â ºÎºÐÀÌ´Ù.
-            cout << "À¯È¿ÇÏÁö ¾ÊÀº ÁÂÇ¥ÀÔ´Ï´Ù. ´Ù½Ã ÀÔ·ÂÇÏ¼¼¿ä." << endl;
+            // ì¼ë°˜ì ìœ¼ë¡œëŠ” 0,0 0,1ìœ¼ë¡œ ë“¤ì–´ì˜¤ì§€ë§Œ, 
+            // ë§Œì•½ ë§µ í¬ê¸°ë³´ë‹¤ í¬ê±°ë‚˜ ìž‘ì€ ê²½ìš°ì—ëŠ” xì™€ yë¥¼ ìžë™ ì´ˆê¸°í™”í•˜ê³  ì¢Œí‘œë¥¼ ë‹¤ì‹œ ìž…ë ¥í•˜ê²Œë” ë§Œë“œëŠ” ë¶€ë¶„ì´ë‹¤.
+            cout << "ìœ íš¨í•˜ì§€ ì•Šì€ ì¢Œí‘œìž…ë‹ˆë‹¤. ë‹¤ì‹œ ìž…ë ¥í•˜ì„¸ìš”." << endl;
             x = -1;
             y = -1;
         }
